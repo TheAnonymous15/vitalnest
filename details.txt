@@ -1,0 +1,1053 @@
+# Vitalnest Homecare
+
+## Super‑Enterprise Microservices Healthcare Platform
+
+**Feel human. Operate like a system. Grow like a platform.**
+
+---
+
+## 1. Executive Summary
+
+This document defines a **complete, production‑grade, enterprise healthcare platform** for Vitalnest Homecare. It combines:
+
+* Microservices architecture
+* Role‑based dashboards
+* Clinical & laboratory workflows
+* Analytics & reporting
+* A unified design system
+* A practical execution roadmap
+
+This is not a brochure website. It is **digital healthcare infrastructure**.
+
+---
+
+## 2. Design Tokens → Tailwind Configuration
+
+### 2.1 Canonical Design Tokens
+
+```js
+// tailwind.config.js (conceptual)
+module.exports = {
+  theme: {
+    extend: {
+      colors: {
+        primary: '#0F766E',        // Vital Teal
+        primaryDark: '#134E4A',
+        accent: '#F97316',         // Warm Orange
+        accentSoft: '#FDBA74',
+        surface: '#FFFBEB',
+        panel: '#F3F4F6',
+        border: '#D1D5DB',
+        textPrimary: '#1F2933',
+        success: '#16A34A',
+        warning: '#EAB308',
+        danger: '#DC2626',
+        info: '#2563EB'
+      }
+    }
+  }
+}
+```
+
+### 2.2 Component Consistency
+
+* Same tokens across web, dashboards, reports
+* Zero color drift
+* Dark mode possible without redesign
+
+---
+
+## 3. Dashboard Wireframes (Logical Layouts)
+
+### 3.1 Admin Dashboard
+
+**Top KPIs**
+
+* Active patients
+* Visits today
+* Caregivers on duty
+* Alerts pending
+
+**Core Panels**
+
+* Visit pipeline timeline
+* Revenue & package performance
+* Compliance alerts
+* System health
+
+---
+
+### 3.2 Clinician Dashboard
+
+**Overview**
+
+* Assigned patients
+* Critical alerts
+
+**Patient View**
+
+* Demographics
+* Diagnoses
+* Medications
+* Lab trends (graphs)
+
+**Actions**
+
+* Approve care plans
+* Order labs
+* Add clinical notes
+
+---
+
+### 3.3 Lab Technician Dashboard
+
+**Queue View**
+
+* Pending samples
+* Test type
+* SLA timer
+
+**Result Entry**
+
+* Structured fields
+* Normal ranges
+* Auto‑flag abnormalities
+
+**Submission Flow**
+
+* Draft → Verified → Published
+
+---
+
+### 3.4 Caregiver Dashboard
+
+* Daily assignments
+* Patient snapshot
+* Task checklist
+* Visit report submission
+
+---
+
+### 3.5 Client / Family Dashboard
+
+* Care plan overview
+* Visit history
+* Lab reports (PDF + trends)
+* Notifications
+
+---
+
+## 4. Microservice → Dashboard Data Mapping
+
+### Core Services
+
+| Microservice       | Dashboards Using It                 |
+| ------------------ | ----------------------------------- |
+| Identity Service   | All                                 |
+| Patient Service    | Admin, Clinician, Caregiver, Client |
+| Scheduling Service | Admin, Caregiver                    |
+| Medical Records    | Clinician, Client                   |
+| Lab Service        | Lab, Clinician, Client              |
+| Analytics Service  | Admin, Reports                      |
+| Reporting Service  | Admin, Client                       |
+
+---
+
+## 5. API Contracts (Representative Examples)
+
+### 5.1 Patient Service
+
+```
+GET /api/patients/{id}
+POST /api/patients
+GET /api/patients/{id}/history
+```
+
+### 5.2 Lab Service
+
+```
+POST /api/labs/orders
+GET /api/labs/orders/{id}
+POST /api/labs/results
+GET /api/labs/results/{patientId}
+```
+
+### 5.3 Analytics Service
+
+```
+POST /api/events
+GET /api/analytics/kpis
+```
+
+---
+
+## 6. Analytics & Reporting Engine
+
+### 6.1 Event‑Driven Analytics
+
+Every action emits an event:
+
+* Visit completed
+* Lab result published
+* Alert triggered
+
+Events → Analytics Service → Dashboards
+
+---
+
+### 6.2 Reports
+
+* Patient health trajectory
+* Lab turnaround times
+* Caregiver utilization
+* Revenue per package
+* Risk exposure
+
+Exports: PDF, CSV
+
+---
+
+## 7. Execution Roadmap (Build Order)
+
+### Phase 0 – Foundation (Weeks 1–2)
+
+* Design system
+* Tailwind setup
+* Auth & RBAC
+
+### Phase 1 – Core Platform (Weeks 3–6)
+
+* Patient service
+* Scheduling service
+* Admin dashboard
+
+### Phase 2 – Clinical & Lab (Weeks 7–10)
+
+* Clinician dashboard
+* Lab service & dashboard
+* Medical records
+
+### Phase 3 – Analytics & Reporting (Weeks 11–13)
+
+* Event pipeline
+* KPI dashboards
+* Reports
+
+### Phase 4 – Hardening (Weeks 14–16)
+
+* Security review
+* Performance tuning
+* Compliance checks
+
+---
+
+## 8. Operational Excellence
+
+### Observability
+
+* Logs per service
+* Health checks
+* Error dashboards
+
+### Security
+
+* Role isolation
+* Encrypted data
+* Audit trails
+
+---
+
+## 9. Strategic Outcome
+
+With this system, Vitalnest becomes:
+
+* A **digitally coordinated care provider**
+* A **clinical‑grade platform**
+* A **data‑driven healthcare organization**
+
+This architecture can support:
+
+* Regional expansion
+* Hospital partnerships
+* Insurance integration
+* AI‑assisted care
+
+---
+
+**Vitalnest is not building software.**
+**Vitalnest is building healthcare infrastructure.**
+
+---
+
+---
+
+## 10. Event Schemas (Event-Driven Backbone)
+
+All critical actions emit immutable events. Events are published to the **Event Bus** and consumed by Analytics, Reporting, Notifications, and Audit services.
+
+### 10.1 Core Event Structure
+
+```json
+{
+  "event_id": "uuid",
+  "event_type": "VISIT_COMPLETED",
+  "source_service": "scheduling-service",
+  "actor_role": "caregiver",
+  "actor_id": "uuid",
+  "patient_id": "uuid",
+  "timestamp": "ISO-8601",
+  "payload": {}
+}
+```
+
+### 10.2 Key Events
+
+* PATIENT_CREATED
+* VISIT_SCHEDULED
+* VISIT_COMPLETED
+* LAB_ORDERED
+* LAB_RESULT_PUBLISHED
+* CARE_PLAN_UPDATED
+* ALERT_TRIGGERED
+
+---
+
+## 11. Database Schemas (Per Microservice)
+
+### 11.1 Patient Service (Relational)
+
+**patients**
+
+* id (uuid)
+* full_name
+* dob
+* gender
+* primary_contact
+* created_at
+
+**patient_consents**
+
+* id
+* patient_id
+* consent_type
+* granted_at
+
+---
+
+### 11.2 Clinician / Medical Records Service
+
+**clinical_notes**
+
+* id
+* patient_id
+* clinician_id
+* diagnosis
+* notes
+* created_at
+
+**medications**
+
+* id
+* patient_id
+* drug_name
+* dosage
+* frequency
+
+---
+
+### 11.3 Lab Service
+
+**lab_orders**
+
+* id
+* patient_id
+* ordered_by
+* status
+* created_at
+
+**lab_results**
+
+* id
+* lab_order_id
+* test_name
+* value
+* unit
+* normal_range
+* flagged
+
+---
+
+### 11.4 Scheduling Service
+
+**visits**
+
+* id
+* patient_id
+* caregiver_id
+* scheduled_time
+* status
+
+---
+
+## 12. Care Workflows (System Truth)
+
+### 12.1 Home Visit Workflow
+
+1. Client requests visit
+2. Admin approves & schedules
+3. Caregiver assigned
+4. Visit completed
+5. Report submitted
+6. Clinician review (if required)
+
+---
+
+### 12.2 Lab Workflow
+
+1. Clinician orders test
+2. Lab technician receives request
+3. Sample collected
+4. Result entered
+5. Clinician signs off
+6. Client notified
+
+---
+
+### 12.3 Escalation Workflow
+
+1. Abnormal reading detected
+2. Alert triggered
+3. Clinician notified
+4. Action logged
+
+---
+
+## 13. Disaster Recovery & Uptime Strategy
+
+### 13.1 Availability Targets
+
+* Core services: 99.9%
+* Analytics: 99.5%
+
+### 13.2 Backup Strategy
+
+* Daily encrypted backups
+* Cross-region replication
+
+### 13.3 Failure Isolation
+
+* Service-level isolation
+* Graceful degradation
+
+---
+
+## 14. Governance & Auditability
+
+* Immutable audit logs
+* Role-based traceability
+* Regulatory-ready reporting
+
+---
+
+**End of Master System Design Document**
+
+---
+
+## 15. Single-File Implementation Blueprint (Folders + Service Skeletons + Migrations)
+
+> This section intentionally consolidates **folder structures**, **service skeletons**, and **database migrations** into **one executable reference file** for rapid bootstrapping. Teams can split it later without redesign.
+
+```text
+// FILE: vitalnest-enterprise-bootstrap.md
+
+# VITALNEST ENTERPRISE PLATFORM – BOOTSTRAP FILE
+
+===============================================
+1) MONOREPO FOLDER STRUCTURE
+===============================================
+
+vitalnest-platform/
+├── gateway/
+│   ├── public/index.php
+│   ├── middleware/AuthMiddleware.php
+│   └── routes/api.php
+│
+├── services/
+│   ├── identity-service/
+│   ├── patient-service/
+│   ├── clinician-service/
+│   ├── lab-service/
+│   ├── scheduling-service/
+│   ├── medical-records-service/
+│   ├── analytics-service/
+│   └── reporting-service/
+│
+├── frontend/
+│   ├── public-site/
+│   ├── admin-dashboard/
+│   ├── clinician-dashboard/
+│   ├── lab-dashboard/
+│   ├── caregiver-dashboard/
+│   └── client-dashboard/
+│
+├── shared/
+│   ├── events/
+│   ├── contracts/
+│   └── auth/
+│
+└── infra/
+    ├── docker/
+    └── nginx/
+
+
+===============================================
+2) SERVICE SKELETON (LAB SERVICE – REFERENCE)
+===============================================
+
+/services/lab-service/
+├── app/
+│   ├── Controllers/LabController.php
+│   ├── Models/LabOrder.php
+│   ├── Models/LabResult.php
+│   ├── Services/LabWorkflowService.php
+│   └── Events/LabResultPublished.php
+│
+├── database/migrations/
+│   ├── 2026_01_01_create_lab_orders_table.php
+│   └── 2026_01_01_create_lab_results_table.php
+│
+├── routes/api.php
+├── public/index.php
+└── composer.json
+
+
+--- LabController.php ---
+
+<?php
+namespace App\Controllers;
+
+use App\Services\LabWorkflowService;
+
+class LabController
+{
+    public function createOrder(array $data)
+    {
+        return LabWorkflowService::createOrder($data);
+    }
+
+    public function submitResult(array $data)
+    {
+        return LabWorkflowService::publishResult($data);
+    }
+
+    public function getPatientResults(string $patientId)
+    {
+        return LabWorkflowService::getResultsForPatient($patientId);
+    }
+}
+
+
+--- LabWorkflowService.php ---
+
+<?php
+namespace App\Services;
+
+use App\Models\LabOrder;
+use App\Models\LabResult;
+use App\Events\LabResultPublished;
+
+class LabWorkflowService
+{
+    public static function createOrder(array $data)
+    {
+        return LabOrder::create($data);
+    }
+
+    public static function publishResult(array $data)
+    {
+        $result = LabResult::create($data);
+        event(new LabResultPublished($result));
+        return $result;
+    }
+
+    public static function getResultsForPatient(string $patientId)
+    {
+        return LabResult::where('patient_id', $patientId)->get();
+    }
+}
+
+
+===============================================
+3) DATABASE MIGRATIONS (LAB SERVICE)
+===============================================
+
+--- create_lab_orders_table.php ---
+
+<?php
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+class CreateLabOrdersTable extends Migration
+{
+    public function up()
+    {
+        Schema::create('lab_orders', function (Blueprint $table) {
+            $table->uuid('id')->primary();
+            $table->uuid('patient_id');
+            $table->uuid('ordered_by');
+            $table->string('test_type');
+            $table->string('status')->default('pending');
+            $table->timestamps();
+        });
+    }
+}
+
+
+--- create_lab_results_table.php ---
+
+<?php
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+class CreateLabResultsTable extends Migration
+{
+    public function up()
+    {
+        Schema::create('lab_results', function (Blueprint $table) {
+            $table->uuid('id')->primary();
+            $table->uuid('lab_order_id');
+            $table->string('test_name');
+            $table->string('value');
+            $table->string('unit')->nullable();
+            $table->string('normal_range')->nullable();
+            $table->boolean('flagged')->default(false);
+            $table->timestamps();
+        });
+    }
+}
+
+
+===============================================
+END OF SINGLE-FILE BOOTSTRAP
+===============================================
+```
+
+---
+
+**Usage Notes**
+
+* This file is the **source of truth** for initial setup.
+* Teams may split it into repos/services after scaffolding.
+* Patterns repeat identically for Patient, Clinician, Scheduling, and Records services.
+
+---
+
+---
+
+## 16. Clinical Data Model, Care Packages & Service Catalog (Updated)
+
+This section incorporates **operational clinical realities**, **care packages**, **billing logic**, and **service offerings** directly into the platform design. It aligns medical workflows, analytics, reporting, and monetization.
+
+---
+
+### 16.1 System-Analysed Clinical Data (Core Patient Intelligence)
+
+Beyond demographic data, the system MUST capture, analyse, and trend the following:
+
+**A. Clinical History**
+
+* Major complaints (primary & secondary)
+* History of present complaint (HPC)
+* Past medical history (PMH)
+* Past surgical history (PSH)
+* Known illnesses / diagnoses under management
+* Allergies
+* Current medications (dose, frequency, adherence)
+
+**B. Ongoing Care Signals**
+
+* Symptom progression or resolution
+* Vital trends (BP, RBS, weight, SPO2, etc.)
+* Nursing notes
+* Clinician assessments
+* Physiotherapy progress notes
+* Nutrition plans & adherence
+
+> These inputs feed **analytics, alerts, reports, and escalation rules**.
+
+---
+
+### 16.2 Care Packages (Subscription-Based Care Engine)
+
+Packages are implemented as **subscription plans** with defined entitlements, visit frequency, and lab limits.
+
+#### 1️⃣ Basic Package – KES 25,000 / Month
+
+* Weekly visits by:
+
+  * Clinician
+  * Nurse
+  * Physiotherapist
+  * Nutritionist
+* Laboratory tests included:
+
+  * Full Hemogram (FHG)
+  * Blood Sugar (BS) for MPS
+
+**System rules:**
+
+* Visit counter enforcement
+* Lab entitlement caps
+* Monthly renewal automation
+
+---
+
+#### 2️⃣ Standard Package – KES 50,000 / Month
+
+* Weekly visits + on-call visits
+* Laboratory tests:
+
+  * Full Hemogram (FHG)
+  * Blood Sugar (BS)
+  * UECs
+  * LFTs
+  * X-rays (as prescribed)
+* Includes:
+
+  * Regular wound dressings
+  * Nasogastric tube (NGT) feeding
+
+**System rules:**
+
+* On-call visit logging
+* Consumables tracking
+* Nursing workload analytics
+
+---
+
+#### 3️⃣ Premium Package – KES 200,000 / Month
+
+* Daily nursing care
+* On-call clinician management
+* Weekly:
+
+  * Physiotherapy
+  * Nutritional reviews
+* Laboratory limits:
+
+  * UECs & LFTs: weekly
+  * FHG & BS: max twice weekly
+
+**System rules:**
+
+* Daily task scheduler
+* Care continuity scoring
+* High-risk alerting enabled by default
+
+---
+
+#### 4️⃣ Maternal Package – KES 50,000 / 3 Months
+
+* Ultrasound: one per trimester
+* Weekly + on-call visits by:
+
+  * Midwife
+  * Clinician
+  * Nutritionist
+* Antenatal profile (1st trimester)
+
+Includes:
+
+* Antenatal care
+* Prenatal monitoring
+* Postnatal follow-up
+
+**System rules:**
+
+* Trimester-based milestones
+* Maternal risk scoring
+* Mother–child wellness timeline
+
+---
+
+### 16.3 Services Offered (Service Catalog Module)
+
+The system supports booking, documentation, billing, and reporting for:
+
+1. Initial comprehensive assessment
+2. Medication management
+3. Assistance with daily living activities
+4. Wound care
+5. Nutritional counselling & support
+6. Physiotherapy
+7. Coordination & referrals to specialized therapists
+8. Nasogastric feeding
+9. Electrocardiogram (ECG)
+10. Laboratory services & imaging
+11. Maternal, antenatal, prenatal & postnatal care
+
+Each service is:
+
+* Time-stamped
+* Role-attributed
+* Billable or package-covered
+* Auditable
+
+---
+
+### 16.4 Payments & Billing Architecture
+
+Supported and upcoming payment methods:
+
+* M-Pesa (Paybill)
+* Bank transfer
+* Card payments (planned)
+
+**Billing capabilities:**
+
+* Subscription billing
+* Pro-rata adjustments
+* Invoice generation
+* Receipt issuance
+* Payment reconciliation
+
+Payment providers are abstracted to allow **easy addition or replacement**.
+
+---
+
+### 16.5 External Profiling & Partnerships (Future-Ready)
+
+The platform supports:
+
+* Profiling of partner companies
+* Corporate care plans
+* Referral partnerships
+* Branded reporting
+
+---
+
+### 16.6 Contact & Communication Management
+
+**Current contacts:**
+
+* Email: [Vitalnesthomecare25@gmail.com](mailto:Vitalnesthomecare25@gmail.com)
+* Phone / WhatsApp: 0746511327
+
+**System design note:**
+
+* Contact details are stored as **configurable entities**, not hardcoded
+* Enables future number changes without redeployment
+
+---
+
+### 16.7 Media & Client-Generated Content
+
+The system supports secure storage of:
+
+* Patient images (e.g. wounds, progress)
+* Videos (mobility, therapy sessions)
+
+Features:
+
+* Consent tracking
+* Access control
+* Time-based retention policies
+* Media-linked clinical notes
+
+---
+
+**Outcome:**
+This update transforms the platform into a **clinically accurate, subscription-driven, analytics-enabled healthcare operating system** aligned with real-world care delivery.
+
+---
+
+---
+
+## 17. Clinical Risk Scoring & Escalation Engine
+
+This section defines how the platform **actively reasons about patient risk**, rather than passively storing data. The goal is early detection, prioritization, and safe escalation.
+
+---
+
+### 17.1 Purpose of Risk Scoring
+
+The risk engine exists to:
+
+* Identify high‑risk patients early
+* Guide clinician attention
+* Trigger alerts & escalations
+* Support management oversight
+* Enable outcome-based reporting
+
+Risk scoring is **assistive**, not diagnostic, and always defers final decisions to clinicians.
+
+---
+
+### 17.2 Risk Domains
+
+Risk is computed across multiple domains, each contributing to an overall score.
+
+**A. Clinical Condition Risk**
+
+* Number of active diagnoses
+* Presence of chronic illness (e.g. diabetes, HTN, CKD)
+* Maternal risk factors (for maternal package)
+
+**B. Symptom & Complaint Risk**
+
+* Worsening or persistent complaints
+* New symptoms reported between visits
+* Pain scores above threshold
+
+**C. Vital Signs Risk**
+
+* Persistent abnormal BP
+* Recurrent abnormal BS readings
+* Oxygen saturation trends
+* Weight loss/gain trends
+
+**D. Medication Risk**
+
+* Polypharmacy (≥5 medications)
+* Missed doses / non‑adherence
+* High‑risk medications
+
+**E. Care Dependency Risk**
+
+* NGT feeding
+* Regular wound care
+* Limited mobility / ADL dependence
+
+---
+
+### 17.3 Risk Scoring Model (Illustrative)
+
+| Risk Level | Score Range | Meaning                             |
+| ---------- | ----------- | ----------------------------------- |
+| Low        | 0–25        | Stable, routine monitoring          |
+| Moderate   | 26–50       | Needs closer follow‑up              |
+| High       | 51–75       | Requires active clinician oversight |
+| Critical   | 76–100      | Immediate review / escalation       |
+
+Scores are recalculated:
+
+* After every visit
+* After new lab results
+* When vitals are entered
+
+---
+
+### 17.4 Automated Actions & Escalation
+
+Based on risk level:
+
+* **Moderate** → Highlighted on clinician dashboard
+* **High** → Auto-notify clinician + care coordinator
+* **Critical** → Immediate alert + management visibility
+
+Escalations are logged for audit and quality improvement.
+
+---
+
+### 17.5 Risk Visibility by Role
+
+* Clinicians: full risk breakdown
+* Nurses: actionable care risks only
+* Admin/Management: anonymized aggregate risk views
+* Clients: simplified reassurance indicators (not raw scores)
+
+---
+
+## 18. Reporting Framework & Report Definitions
+
+This section defines **what reports exist**, **who sees them**, and **why they matter**.
+
+---
+
+### 18.1 Clinical Reports
+
+**A. Patient Clinical Summary**
+
+* Diagnoses
+* Current medications
+* Recent visits
+* Latest labs
+* Risk score trend
+
+**B. Visit & Care Reports**
+
+* Visits per patient
+* Missed / delayed visits
+* On-call visit frequency
+
+**C. Outcomes Tracking**
+
+* Symptom improvement trends
+* Wound healing timelines
+* Maternal milestones achieved
+
+---
+
+### 18.2 Laboratory & Diagnostics Reports
+
+* Tests performed per period
+* Abnormal result rates
+* Turnaround times
+* Package vs out-of-package labs
+
+---
+
+### 18.3 Package & Subscription Reports
+
+* Active subscriptions by package
+* Package utilization rates
+* Over‑utilization alerts
+* Churn & renewals
+
+---
+
+### 18.4 Financial & Billing Reports (Management Only)
+
+* Revenue by package
+* Revenue by service
+* Outstanding payments
+* Payment method distribution
+
+---
+
+### 18.5 Workforce & Operations Reports
+
+* Visits per clinician/nurse
+* Workload distribution
+* Response time to alerts
+* Burnout risk indicators (volume-based)
+
+---
+
+### 18.6 Quality & Compliance Reports
+
+* Escalation frequency
+* Incident logs
+* Documentation completeness
+* Audit trails
+
+---
+
+### 18.7 Access Control & Report Visibility
+
+Reports are role‑restricted:
+
+* Clinicians: clinical & patient-specific
+* Lab staff: lab-only reports
+* Admin: operational & financial
+* Management: aggregate & strategic
+
+---
+
+**Outcome:**
+With risk scoring and structured reporting, the platform now **thinks, prioritizes, and explains itself**, transforming data into actionable intelligence.
+
+---
+

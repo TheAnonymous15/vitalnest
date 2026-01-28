@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module type="PYTHON_MODULE" version="4">
+  <component name="NewModuleRootManager">
+    <content url="file://$MODULE_DIR$">
+      <sourceFolder url="file://$MODULE_DIR$/vitalnest-platform/services/analytics-service/app" isTestSource="false" packagePrefix="AnalyticsService" />
+      <sourceFolder url="file://$MODULE_DIR$/vitalnest-platform/services/clinician-service/app" isTestSource="false" packagePrefix="ClinicianService" />
+      <sourceFolder url="file://$MODULE_DIR$/vitalnest-platform/services/identity-service/app" isTestSource="false" packagePrefix="IdentityService" />
+      <sourceFolder url="file://$MODULE_DIR$/vitalnest-platform/services/lab-service/app" isTestSource="false" packagePrefix="LabService" />
+      <sourceFolder url="file://$MODULE_DIR$/vitalnest-platform/services/medical-records-service/app" isTestSource="false" packagePrefix="MedicalRecordsService" />
+      <sourceFolder url="file://$MODULE_DIR$/vitalnest-platform/services/notification-service/app" isTestSource="false" packagePrefix="NotificationService" />
+      <sourceFolder url="file://$MODULE_DIR$/vitalnest-platform/services/patient-service/app" isTestSource="false" packagePrefix="PatientService" />
+      <sourceFolder url="file://$MODULE_DIR$/vitalnest-platform/services/reporting-service/app" isTestSource="false" packagePrefix="ReportingService" />
+      <sourceFolder url="file://$MODULE_DIR$/vitalnest-platform/services/scheduling-service/app" isTestSource="false" packagePrefix="SchedulingService" />
+    </content>
+    <orderEntry type="jdk" jdkName="Python 3.9" jdkType="Python SDK" />
+    <orderEntry type="sourceFolder" forTests="false" />
+  </component>
+</module>

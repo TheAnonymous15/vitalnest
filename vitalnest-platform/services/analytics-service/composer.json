@@ -1,0 +1,10 @@
+{
+    "name": "vitalnest/analytics-service",
+    "description": "Vitalnest Platform - Analytics Service",
+    "type": "project",
+    "version": "1.0.0",
+    "require": { "php": ">=8.1" },
+    "autoload": { "psr-4": { "AnalyticsService\\": "app/" } },
+    "scripts": { "serve": "php -S localhost:8007 -t public" }
+}
+

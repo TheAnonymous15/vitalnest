@@ -1,0 +1,10 @@
+{
+    "name": "vitalnest/clinician-service",
+    "description": "Vitalnest Platform - Clinician Management Service",
+    "type": "project",
+    "version": "1.0.0",
+    "require": { "php": ">=8.1" },
+    "autoload": { "psr-4": { "ClinicianService\\": "app/" } },
+    "scripts": { "serve": "php -S localhost:8004 -t public" }
+}
+
