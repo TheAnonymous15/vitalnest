@@ -1,139 +1,149 @@
 <?php
-/**
- * Identity Service - Auth Service
- * Business logic for authentication
- */
 
 namespace IdentityService\Services;
 
 use IdentityService\Models\User;
-use IdentityService\Events\UserRegistered;
-use IdentityService\Events\UserLoggedIn;
+use Firebase\JWT\JWT;
+use Firebase\JWT\Key;
 
 class AuthService
 {
-    /**
-     * Register a new user
-     */
-    public function register(array $data): User
+    private string $jwtSecret;
+    private int $jwtExpiry = 28800; // 8 hours
+
+    public function __construct()
     {
-        // Hash password
-        $data['password'] = password_hash($data['password'], PASSWORD_ARGON2ID);
-        $data['status'] = 'pending';
-        $data['created_at'] = date('Y-m-d H:i:s');
-        $data['updated_at'] = date('Y-m-d H:i:s');
-
-        // Create user (DB implementation would go here)
-        $user = new User();
-        $user->id = rand(1000, 9999); // Placeholder
-        $user->email = $data['email'];
-        $user->first_name = $data['first_name'];
-        $user->last_name = $data['last_name'];
-        $user->role = $data['role'];
-        $user->status = $data['status'];
-        $user->created_at = $data['created_at'];
-
-        // Dispatch event
-        $event = new UserRegistered($user);
-        $event->dispatch();
-
-        return $user;
+        $this->jwtSecret = getenv('JWT_SECRET') ?: 'vitalnest-secret-key-change-in-production';
     }
 
-    /**
-     * Login user
-     */
+    public function register(array $data, bool $autoVerify = false): array
+    {
+        // Check if user exists
+        if (User::findByEmail($data['email'])) {
+            throw new \Exception('Email already registered');
+        }
+
+        $user = new User();
+        $user->setEmail($data['email']);
+        $user->setPassword($data['password']);
+        $user->setFirstName($data['first_name']);
+        $user->setLastName($data['last_name']);
+        $user->setPhone($data['phone'] ?? null);
+        $user->setRole($data['role'] ?? 'patient');
+        $user->setStatus($autoVerify ? 'active' : 'pending'); // Set to pending for OTP verification
+
+        if (!$user->save()) {
+            throw new \Exception('Failed to create user');
+        }
+
+        $result = [
+            'user' => $user->toArray(),
+            'expires_in' => $this->jwtExpiry
+        ];
+
+        // Only generate token if auto-verified
+        if ($autoVerify) {
+            $result['token'] = $this->generateToken($user);
+        }
+
+        return $result;
+    }
+
     public function login(string $email, string $password): ?array
     {
-        // Find user by email (DB implementation would go here)
-        $user = $this->findUserByEmail($email);
+        $user = User::findByEmail($email);
 
-        if (!$user || !password_verify($password, $user->password)) {
+        if ($user === null) {
             return null;
         }
 
-        if (!$user->isActive()) {
-            throw new \Exception('Account is not active');
+        if (!$user->verifyPassword($password)) {
+            return null;
         }
 
-        // Generate JWT token
-        $token = $this->generateToken($user);
-        $refreshToken = $this->generateRefreshToken($user);
-
-        // Update last login
-        $user->last_login_at = date('Y-m-d H:i:s');
-
-        // Dispatch event
-        $event = new UserLoggedIn($user);
-        $event->dispatch();
-
+        // Return user info even if pending (to show verification screen)
         return [
             'user' => $user->toArray(),
-            'token' => $token,
-            'refresh_token' => $refreshToken,
-            'expires_in' => 3600
+            'token' => $user->getStatus() === 'active' ? $this->generateToken($user) : null,
+            'expires_in' => $this->jwtExpiry
         ];
     }
 
     /**
-     * Logout user
+     * Activate user after email verification
      */
-    public function logout(): void
+    public function activateUser(string $email): bool
     {
-        // Invalidate token (implementation would go here)
-        // Could add token to blacklist in Redis/DB
+        $user = User::findByEmail($email);
+
+        if (!$user) {
+            throw new \Exception('User not found');
+        }
+
+        $user->setStatus('active');
+        $user->setEmailVerifiedAt(date('Y-m-d H:i:s'));
+
+        return $user->save();
     }
 
     /**
-     * Refresh JWT token
+     * Get user by email
      */
-    public function refreshToken(): string
+    public function getUserByEmail(string $email): ?User
     {
-        $user = $this->getCurrentUser();
+        return User::findByEmail($email);
+    }
+
+    /**
+     * Generate token for a user
+     */
+    public function generateTokenForUser(User $user): string
+    {
         return $this->generateToken($user);
     }
 
-    /**
-     * Get current authenticated user
-     */
-    public function getCurrentUser(): ?User
-    {
-        // Get user from JWT token (implementation would go here)
-        return null;
-    }
-
-    /**
-     * Generate JWT token
-     */
-    private function generateToken(User $user): string
+    public function generateToken(User $user): string
     {
         $payload = [
-            'sub' => $user->id,
-            'email' => $user->email,
-            'role' => $user->role,
-            'iat' => time(),
-            'exp' => time() + 3600
+            'iss'   => 'vitalnest-identity-service',
+            'sub'   => $user->getId(),
+            'email' => $user->getEmail(),
+            'role'  => $user->getRole(),
+            'iat'   => time(),
+            'exp'   => time() + $this->jwtExpiry
         ];
 
-        // JWT encoding would go here
-        return base64_encode(json_encode($payload));
+        return JWT::encode($payload, $this->jwtSecret, 'HS256');
     }
 
-    /**
-     * Generate refresh token
-     */
-    private function generateRefreshToken(User $user): string
+    public function validateToken(string $token): ?array
     {
-        return bin2hex(random_bytes(32));
+        try {
+            $decoded = JWT::decode($token, new Key($this->jwtSecret, 'HS256'));
+            return (array) $decoded;
+        } catch (\Exception $e) {
+            return null;
+        }
     }
 
-    /**
-     * Find user by email
-     */
-    private function findUserByEmail(string $email): ?User
+    public function getCurrentUser(): ?User
     {
-        // DB query would go here
-        return null;
+        $headers = getallheaders();
+        $authHeader = $headers['Authorization'] ?? null;
+
+        if ($authHeader === null) {
+            return null;
+        }
+
+        // Remove "Bearer " prefix
+        $token = str_replace('Bearer ', '', $authHeader);
+
+        $payload = $this->validateToken($token);
+
+        if ($payload === null || !isset($payload['sub'])) {
+            return null;
+        }
+
+        return User::find($payload['sub']);
     }
 }
-

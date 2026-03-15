@@ -47,7 +47,7 @@
 
                 <!-- CTA Buttons -->
                 <div class="flex flex-col sm:flex-row gap-4 pt-4">
-                    <a href="#packages" class="inline-flex items-center justify-center gap-3 px-10 py-5 bg-gradient-to-r from-vital-teal to-deep-teal text-white rounded-2xl font-bold hover:shadow-lg transition duration-300 group">
+                    <a href="/patient" target="_blank" class="inline-flex items-center justify-center gap-3 px-10 py-5 bg-gradient-to-r from-vital-teal to-deep-teal text-white rounded-2xl font-bold hover:shadow-lg transition duration-300 group">
                         <i class="fas fa-calendar-check group-hover:scale-125 transition duration-300"></i>
                         <span>Book a Visit</span>
                     </a>

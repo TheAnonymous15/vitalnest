@@ -63,9 +63,9 @@
                                 </div>
                                 <h3 class="text-2xl font-bold text-white mb-2">Basic Care</h3>
                                 <p class="text-white/60 text-sm mb-6">Essential health monitoring for independent seniors and individuals needing routine check-ups.</p>
-                                <button class="w-full py-3 bg-vital-teal text-white font-bold rounded-xl hover:bg-teal-600 transition-all duration-300">
+                                <a href="/patient" target="_blank" class="block w-full py-3 bg-vital-teal text-white font-bold rounded-xl hover:bg-teal-600 transition-all duration-300 text-center">
                                     Get Started <i class="fas fa-arrow-right ml-2"></i>
-                                </button>
+                                </a>
                             </div>
                         </div>
                     </div>
@@ -157,9 +157,9 @@
                                 </div>
                                 <h3 class="text-2xl font-bold text-white mb-2">Standard Care</h3>
                                 <p class="text-white/60 text-sm mb-6">Enhanced care with on-call support and extended diagnostics for those needing more attention.</p>
-                                <button class="w-full py-3 bg-vital-orange text-white font-bold rounded-xl hover:bg-orange-600 transition-all duration-300">
+                                <a href="/patient" target="_blank" class="block w-full py-3 bg-vital-orange text-white font-bold rounded-xl hover:bg-orange-600 transition-all duration-300 text-center">
                                     Get Started <i class="fas fa-arrow-right ml-2"></i>
-                                </button>
+                                </a>
                             </div>
                         </div>
                     </div>
@@ -282,9 +282,9 @@
                                 </div>
                                 <h3 class="text-2xl font-bold text-white mb-2">Maternal Care</h3>
                                 <p class="text-white/60 text-sm mb-6">Complete pregnancy journey support from conception through postnatal recovery.</p>
-                                <button class="w-full py-3 bg-rose-500 text-white font-bold rounded-xl hover:bg-rose-600 transition-all duration-300">
+                                <a href="/patient" target="_blank" class="block w-full py-3 bg-rose-500 text-white font-bold rounded-xl hover:bg-rose-600 transition-all duration-300 text-center">
                                     Get Started <i class="fas fa-arrow-right ml-2"></i>
-                                </button>
+                                </a>
                             </div>
                         </div>
                     </div>

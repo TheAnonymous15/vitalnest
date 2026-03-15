@@ -14,6 +14,23 @@ $config = require __DIR__ . '/../config/service.php';
 // Load routes
 $routes = require __DIR__ . '/../routes/api.php';
 
+// Set CORS headers (allow all origins for development)
+header('Access-Control-Allow-Origin: *');
+header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS, PATCH');
+header('Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With, Accept, Origin');
+header('Access-Control-Allow-Credentials: true');
+header('Access-Control-Max-Age: 86400');
+
+// Handle preflight OPTIONS requests
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    http_response_code(200);
+    exit;
+}
+
+// Add security headers
+header('X-Content-Type-Options: nosniff');
+header('X-Frame-Options: DENY');
+
 // Set headers
 header('Content-Type: application/json');
 header('X-Service: ' . $config['name']);
@@ -41,6 +58,22 @@ foreach ($routes as $route => $handler) {
     if (preg_match($pattern, $uri, $matches)) {
         // Extract route parameters
         $params = array_filter($matches, 'is_string', ARRAY_FILTER_USE_KEY);
+
+        // Handle external file routes (like otp.php)
+        if (isset($handler['external'])) {
+            $externalFile = __DIR__ . '/' . $handler['external'];
+            if (file_exists($externalFile)) {
+                require_once $externalFile;
+                exit;
+            } else {
+                http_response_code(404);
+                $response = [
+                    'success' => false,
+                    'message' => 'External handler not found'
+                ];
+                break;
+            }
+        }
 
         // Check middleware
         if (isset($handler[2])) {

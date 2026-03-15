@@ -465,7 +465,7 @@
 
                             <!-- CTA Buttons -->
                             <div class="flex flex-wrap gap-3">
-                                <a href="#packages" class="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-vital-teal to-teal-600 text-white rounded-xl font-bold text-sm hover:shadow-lg hover:shadow-vital-teal/40 hover:-translate-y-0.5 transition-all duration-300 group">
+                                <a href="/patient" target="_blank" class="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-vital-teal to-teal-600 text-white rounded-xl font-bold text-sm hover:shadow-lg hover:shadow-vital-teal/40 hover:-translate-y-0.5 transition-all duration-300 group">
                                     <i class="fas fa-calendar-check group-hover:scale-110 transition-transform"></i>
                                     <span>Book a Visit</span>
                                 </a>

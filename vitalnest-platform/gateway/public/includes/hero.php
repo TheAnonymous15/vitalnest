@@ -80,7 +80,7 @@
                     <div class="relative bg-white/5 backdrop-blur-xl rounded-3xl border border-white/10 p-2 max-w-xl mx-auto lg:mx-0">
                         <div class="flex flex-col sm:flex-row items-stretch gap-2">
                             <!-- Primary CTA - Book Home Visit -->
-                            <a href="#packages" class="group relative flex-1">
+                            <a href="/patient" target="_blank" class="group relative flex-1">
                                 <!-- Glow effect -->
                                 <div class="absolute -inset-0.5 bg-gradient-to-r from-vital-teal via-teal-500 to-vital-teal rounded-2xl opacity-0 group-hover:opacity-70 blur-md transition-all duration-500"></div>
                                 <div class="relative h-full flex items-center justify-center gap-3 px-6 py-4 bg-gradient-to-r from-vital-teal to-teal-600 text-white rounded-2xl font-bold text-base shadow-xl overflow-hidden border border-white/20">
@@ -181,7 +181,7 @@
                                         <!-- Content container - positioned to show LEFT half only -->
                                         <div class="absolute top-0 left-0 w-[200%] h-full flex flex-col items-center justify-center">
                                             <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl overflow-hidden shadow-lg mb-2 border border-vital-orange/30 animate-logo-float">
-                                                <img src="resources/logo.jpeg" alt="Vitalnest Logo" class="w-full h-full object-cover">
+                                                <img src="/resources/logo.jpeg" alt="Vitalnest Logo" class="w-full h-full object-cover">
                                             </div>
                                             <span class="text-white font-black text-lg sm:text-xl">Vitalnest</span>
                                             <span class="text-vital-orange text-[10px] sm:text-xs uppercase tracking-wider font-semibold animate-text-glow">Our Services</span>
@@ -194,7 +194,7 @@
                                         <!-- Content container - positioned to show RIGHT half only -->
                                         <div class="absolute top-0 right-0 w-[200%] h-full flex flex-col items-center justify-center">
                                             <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl overflow-hidden shadow-lg mb-2 border border-vital-orange/30 animate-logo-float">
-                                                <img src="resources/logo.jpeg" alt="Vitalnest Logo" class="w-full h-full object-cover">
+                                                <img src="/resources/logo.jpeg" alt="Vitalnest Logo" class="w-full h-full object-cover">
                                             </div>
                                             <span class="text-white font-black text-lg sm:text-xl">Vitalnest</span>
                                             <span class="text-vital-orange text-[10px] sm:text-xs uppercase tracking-wider font-semibold animate-text-glow">Our Services</span>

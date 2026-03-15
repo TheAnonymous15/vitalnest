@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VitalNest - Clinician Login</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'vital-teal': '#0F766E',
+                        'vital-orange': '#F97316'
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gradient-to-br from-teal-900 via-teal-800 to-slate-900 min-h-screen flex items-center justify-center p-4">
+
+    <div class="w-full max-w-md">
+
+        <!-- Logo -->
+        <div class="text-center mb-8">
+            <div class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-vital-teal to-cyan-600 rounded-2xl mb-4 shadow-2xl">
+                <i class="fas fa-user-md text-white text-3xl"></i>
+            </div>
+            <h1 class="text-3xl font-black text-white mb-2">VitalNest Clinician</h1>
+            <p class="text-white/60">Healthcare Provider Portal</p>
+        </div>
+
+        <!-- Login Card -->
+        <div class="bg-white/10 backdrop-blur-xl border border-white/20 rounded-3xl p-8 shadow-2xl">
+
+            <div id="alert" class="hidden mb-6 p-4 rounded-xl"></div>
+
+            <form id="loginForm" class="space-y-6">
+
+                <div>
+                    <label class="block text-sm font-semibold text-white mb-2">
+                        <i class="fas fa-envelope mr-2"></i>Email Address
+                    </label>
+                    <input
+                        type="email"
+                        id="email"
+                        required
+                        class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-vital-teal"
+                        placeholder="clinician@vitalnest.com"
+                    >
+                </div>
+
+                <div>
+                    <label class="block text-sm font-semibold text-white mb-2">
+                        <i class="fas fa-lock mr-2"></i>Password
+                    </label>
+                    <input
+                        type="password"
+                        id="password"
+                        required
+                        class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-vital-teal"
+                        placeholder="Enter password"
+                    >
+                </div>
+
+                <button
+                    type="submit"
+                    id="loginBtn"
+                    class="w-full py-4 bg-gradient-to-r from-vital-teal to-cyan-600 text-white font-bold rounded-xl shadow-xl hover:shadow-2xl transition-all"
+                >
+                    <i class="fas fa-sign-in-alt mr-2"></i>Sign In
+                </button>
+
+            </form>
+
+        </div>
+
+    </div>
+
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const loginBtn = document.getElementById('loginBtn');
+            loginBtn.disabled = true;
+            loginBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Signing in...';
+
+            try {
+                const response = await fetch('http://localhost:9099/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        email: document.getElementById('email').value,
+                        password: document.getElementById('password').value
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.success && data.data.user.role === 'clinician') {
+                    localStorage.setItem('auth_token', data.data.token);
+                    localStorage.setItem('user', JSON.stringify(data.data.user));
+                    window.location.href = 'dashboard.html';
+                } else {
+                    alert('Access denied. Clinician account required.');
+                    loginBtn.disabled = false;
+                    loginBtn.innerHTML = '<i class="fas fa-sign-in-alt mr-2"></i>Sign In';
+                }
+            } catch (error) {
+                alert('Connection error. Ensure Identity Service is running.');
+                loginBtn.disabled = false;
+                loginBtn.innerHTML = '<i class="fas fa-sign-in-alt mr-2"></i>Sign In';
+            }
+        });
+
+        if (localStorage.getItem('auth_token')) {
+            window.location.href = 'dashboard.html';
+        }
+    </script>
+
+</body>
+</html>

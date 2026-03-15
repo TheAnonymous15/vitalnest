@@ -1,0 +1,29 @@
+if (!$hasAuthToken) <?php
+session_start();
+// Check if user is ogsesshp// Check if use r$token = $_COOKIE['caregiver_token'] ?? '';
+$hasAuthToken = !e t$hasAuthToken = !empty($token);
+/<?php
+ses'E/<?php
+session_start();
+// CheChsessif // Check if useic$hasAuthToken = !eon$hasAuthToken = !empty($token);
+// Load t
+}// Load the appropriatn // Load t
+}// Load the appropriate componasif (!$ht
+}// LoadsA    requirse    require_once __Dec} else {
+    requirog    require_once __DIR__ . '/components/d_ EOF
+# Fix receptionist
+cat > receptionist-dashboard/
+cat > clinician-dashboard/index.php << 'EOF'
+<?php
+session_start();
+// Check if user i// Check if use with clinician-specific token
+$token = $_COOKIE['clinician_token'] ?? '';
+$hasAuthToken = !empty($token);
+// Load the appropriate component
+if (!$hasAuthToken) {
+    require_once __DIR__ . '/components/login.php';
+} else {
+    require_once __DIR__ . '/components/dashboard.php';
+}
+EOF
+echo "✅ Fixed all remaining index.php files"
